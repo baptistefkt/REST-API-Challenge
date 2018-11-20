@@ -1,0 +1,28 @@
+{
+  "name": "rest-api-challenge",
+  "version": "1.0.0",
+  "description": "Build a simple REST-API with Node.js",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/baptistefkt/REST-API-Challenge.git"
+  },
+  "keywords": [
+    "node",
+    "api"
+  ],
+  "author": "Baptiste Firket (BeCode)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/baptistefkt/REST-API-Challenge/issues"
+  },
+  "homepage": "https://github.com/baptistefkt/REST-API-Challenge#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "joi": "^14.1.0"
+  }
+}
