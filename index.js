@@ -1,14 +1,12 @@
 const express = require('express');
 const Joi = require('joi');
-const bodyParser = require('body-parser');
+
 const app = express();
 
 app.use(express.json());
-app.use(bodyParser.urlencoded({
-    extended: true
-}));
 
-app.use(bodyParser.json());
+// =========== ROUTES ============ //
+
 
 app.get('/', (req, res) => {
     res.send('Hello World');
@@ -19,18 +17,33 @@ app.get('/api/v1/quote/car-insurance', (req, res) => {
 });
 
 app.post('/api/v1/quote/car-insurance', (req, res) => {
-    let date = (new Date()).toLocaleDateString('fr');
+
+    // shema to validate params send by the user
     const shema = {
-        car_value: Joi.number().min(1).required(),
+        car_value: Joi.number().min(99).required(),
         driver_birthdate: Joi.string().regex(/^([0-2][0-9]|(3)[0-1])(\/)(((0)[0-9])|((1)[0-2]))(\/)\d{4}$/).required()
     }
 
     const result = Joi.validate(req.body, shema);
 
-    // const request = {
-    //     "car_value": req.body.car_value,
-    //     "driver_birthdate": req.body.driver_birthdate
-    // };
+    // date and age formating 
+    function formatDate(str) {
+        const splitedDate = str.split(/\//);
+        const formatedDate = [splitedDate[1], splitedDate[0], splitedDate[2]].join('/');
+        return formatedDate;
+    }
+
+    function msAge(date) {
+        const ageMs = new Date() - new Date(date);
+        return ageMs;
+    }
+
+    function msToYear(ms) {
+        const year = ms / 31557600000; // = (365.25 * 24 * 60 * 60 * 1000)
+        return year;
+    }
+
+    let userAge = msToYear(msAge(formatDate(req.body.driver_birthdate)));
 
 
     if (result.error) {
@@ -41,7 +54,7 @@ app.post('/api/v1/quote/car-insurance', (req, res) => {
             }
         )
     } else {
-        if (new Date().getFullYear() - parseInt(req.body.driver_birthdate) < 18) {
+        if (userAge < 18) {
             return res.status(200).send(
                 {
                     "success": true,
@@ -51,7 +64,7 @@ app.post('/api/v1/quote/car-insurance', (req, res) => {
                     }
                 }
             );
-        } else if (17 < x < 26) {
+        } else if (18 <= userAge && userAge < 26) {
             return res.status(200).send(
                 {
                     "success": true,
@@ -60,12 +73,12 @@ app.post('/api/v1/quote/car-insurance', (req, res) => {
                         "eligible": true,
                         "premiums": {
                             "civil_liability": 1000.00,
-                            "omnium": `${(parserInt(req.body.car_value) / 100) * 3}`
+                            "omnium": `${(Number(req.body.car_value) / 100) * 3}`
                         }
                     }
                 }
             );
-        } else if (x > 25) {
+        } else if (userAge >= 26) {
             return res.status(200).send(
                 {
                     "success": true,
@@ -74,7 +87,7 @@ app.post('/api/v1/quote/car-insurance', (req, res) => {
                         "eligible": true,
                         "premiums": {
                             "civil_liability": 500.00,
-                            "omnium": `${(parserInt(req.body.car_value) / 100) * 3}`
+                            "omnium": `${(Number(req.body.car_value) / 100) * 3}`
                         }
                     }
                 }
