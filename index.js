@@ -14,11 +14,11 @@ app.use(bodyParser.json());
 
 // ROUTES 
 app.get('/', (req, res) => {
-    res.send('Hello World');
+    res.send('This API is made with Node.js + Express.js');
 });
 
 app.get('/api/v1/quote/car-insurance', (req, res) => {
-    res.send('Welcome');
+    res.send('Welcome to the car insurance API');
 });
 
 app.post('/api/v1/quote/car-insurance', (req, res) => {
