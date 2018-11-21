@@ -1,19 +1,24 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 const Joi = require('joi');
 
+// Initialize the app
 const app = express();
 
-app.use(express.json());
+// Configure bodyparser to handle post requests
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
 
-// =========== ROUTES ============ //
+app.use(bodyParser.json());
 
-
+// ROUTES 
 app.get('/', (req, res) => {
     res.send('Hello World');
 });
 
 app.get('/api/v1/quote/car-insurance', (req, res) => {
-    res.send('Welcome to the car insurance API');
+    res.send('Welcome');
 });
 
 app.post('/api/v1/quote/car-insurance', (req, res) => {
@@ -26,27 +31,7 @@ app.post('/api/v1/quote/car-insurance', (req, res) => {
 
     const result = Joi.validate(req.body, shema);
 
-    // date and age formating 
-    function formatDate(str) {
-        const splitedDate = str.split(/\//);
-        const formatedDate = [splitedDate[1], splitedDate[0], splitedDate[2]].join('/');
-        return formatedDate;
-    }
-
-    function msAge(date) {
-        const ageMs = new Date() - new Date(date);
-        return ageMs;
-    }
-
-    function msToYear(ms) {
-        const year = ms / 31557600000; // = (365.25 * 24 * 60 * 60 * 1000)
-        return year;
-    }
-
-    let userAge = msToYear(msAge(formatDate(req.body.driver_birthdate)));
-
-
-    if (result.error) {
+    if (result.error || !req.body.car_value || !req.body.driver_birthdate) {
         res.status(400).send(
             {
                 "success": false,
@@ -54,6 +39,27 @@ app.post('/api/v1/quote/car-insurance', (req, res) => {
             }
         )
     } else {
+
+        // date and age formating 
+        function formatDate(str) {
+            const splitedDate = str.split(/\//);
+            const formatedDate = [splitedDate[1], splitedDate[0], splitedDate[2]].join('/');
+            return formatedDate;
+        }
+
+        function msAge(date) {
+            const ageMs = new Date() - new Date(date);
+            return ageMs;
+        }
+
+        function msToYear(ms) {
+            const year = ms / 31557600000; // = (365.25 * 24 * 60 * 60 * 1000)
+            return year;
+        }
+
+        let userAge = msToYear(msAge(formatDate(req.body.driver_birthdate)));
+
+
         if (userAge < 18) {
             return res.status(200).send(
                 {
@@ -101,3 +107,5 @@ app.post('/api/v1/quote/car-insurance', (req, res) => {
 const port = process.env.port || 8080;
 
 app.listen(port, () => console.log(`Listening on port ${port}...`));
+
+module.exports = app; //export modules for testing units
