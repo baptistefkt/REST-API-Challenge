@@ -17,11 +17,11 @@ app.get('/', (req, res) => {
     res.send('This API is made with Node.js + Express.js');
 });
 
-app.get('/api/v1/quote/car-insurance', (req, res) => {
+app.get('/v1/quote/car-insurance', (req, res) => {
     res.send('Welcome to the car insurance API');
 });
 
-app.post('/api/v1/quote/car-insurance', (req, res) => {
+app.post('/v1/quote/car-insurance', (req, res) => {
 
     // shema to validate params send by the user
     const shema = {
