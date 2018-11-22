@@ -1,12 +1,13 @@
 # Node REST API
 
 This is a simple REST API that compute prices and eligibility for a car insurance.
+This recruiting challenge was submitted by [Seraphin.be](https://seraphin.be/fr)
 
 ## Installation 
 
 ```sh
-$ git clone REPO_NAME
-$ cd REPO_NAME
+$ git clone git@github.com:baptistefkt/REST-API-Challenge.git
+$ cd REST-API-Challenge
 $ npm install
 ```
 ## Dependencies 
